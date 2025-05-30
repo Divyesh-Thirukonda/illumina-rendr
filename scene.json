@@ -1,1 +1,248 @@
-{"width":400,"height":300,"spheres":[{"x":0,"y":0,"z":0,"radius":0.3,"r":255,"g":0,"b":0},{"x":0,"y":0,"z":0,"radius":0.3,"r":255,"g":0,"b":0},{"x":0,"y":0,"z":0,"radius":0.3,"r":0,"g":0,"b":255},{"x":0,"y":0,"z":0,"radius":0.3,"r":0,"g":0,"b":255},{"x":0,"y":0,"z":0,"radius":0.3,"r":0,"g":0,"b":255},{"x":0,"y":0,"z":0,"radius":0.3,"r":0,"g":0,"b":255},{"x":1,"y":0,"z":0,"radius":0.3,"r":255,"g":0,"b":255},{"x":0.1,"y":0,"z":0,"radius":0.3,"r":255,"g":0,"b":255},{"x":0.1,"y":0,"z":0,"radius":0.3,"r":255,"g":0,"b":255},{"x":0,"y":0,"z":0,"radius":0.3,"r":255,"g":0,"b":0}]}
+{
+  "width": 800,
+  "height": 600,
+  "eye": [
+    0,
+    5,
+    10
+  ],
+  "viewDir": [
+    0,
+    -0.5,
+    -1
+  ],
+  "upDir": [
+    0,
+    1,
+    0
+  ],
+  "vfov": 45,
+  "bkgcolor": {
+    "rgb": [
+      0.5,
+      0.1,
+      0.8
+    ],
+    "eta": 1
+  },
+  "lights": [
+    {
+      "position": [
+        5,
+        10,
+        5
+      ],
+      "w": 1,
+      "intensity": 1
+    }
+  ],
+  "triangles": [
+    {
+      "v0": [
+        -10,
+        0,
+        -10
+      ],
+      "v1": [
+        10,
+        0,
+        -10
+      ],
+      "v2": [
+        10,
+        0,
+        10
+      ],
+      "vt0": [
+        0,
+        0
+      ],
+      "vt1": [
+        0,
+        0
+      ],
+      "vt2": [
+        0,
+        0
+      ],
+      "diffuse": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "specular": [
+        1,
+        1,
+        1
+      ],
+      "intensity": [
+        0,
+        0.8,
+        1
+      ],
+      "shininess": 10,
+      "alpha": 1,
+      "eta": 0.5,
+      "hasAlphaAt": false
+    },
+    {
+      "v0": [
+        -10,
+        0,
+        -10
+      ],
+      "v1": [
+        10,
+        0,
+        10
+      ],
+      "v2": [
+        -10,
+        0,
+        10
+      ],
+      "vt0": [
+        0,
+        0
+      ],
+      "vt1": [
+        0,
+        0
+      ],
+      "vt2": [
+        0,
+        0
+      ],
+      "diffuse": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "specular": [
+        1,
+        1,
+        1
+      ],
+      "intensity": [
+        0,
+        0.8,
+        1
+      ],
+      "shininess": 10,
+      "alpha": 1,
+      "eta": 0.5,
+      "hasAlphaAt": false
+    }
+  ],
+  "spheres": [
+    {
+      "center": [
+        0,
+        1,
+        0
+      ],
+      "radius": 1,
+      "diffuse": [
+        0,
+        0,
+        0
+      ],
+      "specular": [
+        0.5,
+        1,
+        1
+      ],
+      "intensity": [
+        0,
+        0,
+        1
+      ],
+      "shininess": 100,
+      "alpha": 1,
+      "eta": 0.5,
+      "hasAlphaAt": false
+    },
+    {
+      "center": [
+        -3,
+        1,
+        0
+      ],
+      "radius": 1,
+      "diffuse": [
+        0.2,
+        0.2,
+        0.2
+      ],
+      "specular": [
+        1,
+        1,
+        1
+      ],
+      "intensity": [
+        0,
+        0.9,
+        1
+      ],
+      "shininess": 50,
+      "alpha": 1,
+      "eta": 0.5,
+      "hasAlphaAt": false
+    },
+    {
+      "center": [
+        0,
+        1,
+        3
+      ],
+      "radius": 1,
+      "diffuse": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "specular": [
+        1,
+        1,
+        1
+      ],
+      "intensity": [
+        0.02,
+        0.06,
+        0.2
+      ],
+      "shininess": 100,
+      "alpha": 0.1,
+      "eta": 1.5,
+      "hasAlphaAt": false
+    },
+    {
+      "center": [
+        3,
+        1,
+        0
+      ],
+      "radius": 1,
+      "diffuse": [
+        0.2,
+        0.2,
+        0.2
+      ],
+      "specular": [
+        1,
+        1,
+        1
+      ],
+      "intensity": [
+        0,
+        0.9,
+        0
+      ],
+      "shininess": 50,
+      "alpha": 1,
+      "eta": 0.5,
+      "hasAlphaAt": false,
+      "texture": "soccerball.ppm"
+    }
+  ]
+}

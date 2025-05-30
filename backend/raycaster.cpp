@@ -18,6 +18,7 @@ void clearScene() {
     spheres.clear();
 }
 
+
 void render(const std::string& outputFile, int width, int height) {
     std::ofstream ofs(outputFile, std::ios::binary);
     ofs << "P6\n" << width << " " << height << "\n255\n";

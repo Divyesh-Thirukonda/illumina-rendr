@@ -6,6 +6,7 @@
 #include <limits>
 #include <random>
 #include <stack>
+#include <cstdint>
 
 using namespace std;
 
@@ -106,6 +107,14 @@ struct Triangle {
     //     vt1(_vt1), vt2(_vt2), vt3(_vt3),
     //     diffuseColor(_diffuseColor), specularColor(_specularColor), colorIntensity(_colorIntensity), specIntensity(_specIntensity),
     //     hasNormals(true), alpha(_alpha), eta(_eta),texture(_texture) {}
+
+    Triangle() : v0(Vec3()), v1(Vec3()), v2(Vec3()), 
+        n0(Vec3()), n1(Vec3()), n2(Vec3()), 
+        vt1(Vec2()), vt2(Vec2()), vt3(Vec2()),
+        diffuseColor(Vec3()), specularColor(Vec3()), 
+        colorIntensity(Vec3()), specIntensity(0), 
+        hasNormals(false), alpha(1.0), eta(1.0), 
+        hasAlphaAt(false), alphaR(0), alphaG(0), alphaB(0) {}
     
     Triangle(Vec3 _v0, Vec3 _v1, Vec3 _v2, Vec2 _vt1, Vec2 _vt2, Vec2 _vt3, 
         Vec3 _diffuseColor, Vec3 _specularColor, Vec3 _colorIntensity, 
@@ -1109,17 +1118,17 @@ Scene parseScene(const string& filename) {
     return scene;
 }
 
-int main(int argc, char* argv[]) {
-    if (argc != 2) {
-        // make sure user has input file
-        cerr << "Usage: ./raytracer1a <scene_file>\n";
-        return 1;
-    }
+// int main(int argc, char* argv[]) {
+//     if (argc != 2) {
+//         // make sure user has input file
+//         cerr << "Usage: ./raytracer1a <scene_file>\n";
+//         return 1;
+//     }
 
-    // parse input and begin render
-    string inputFile = argv[1];
-    string outputFile = inputFile.substr(0, inputFile.find_last_of('.')) + ".ppm";
-    Scene scene = parseScene(inputFile);
-    render(scene, outputFile);
-    return 0;
-}
+//     // parse input and begin render
+//     string inputFile = argv[1];
+//     string outputFile = inputFile.substr(0, inputFile.find_last_of('.')) + ".ppm";
+//     Scene scene = parseScene(inputFile);
+//     render(scene, outputFile);
+//     return 0;
+// }

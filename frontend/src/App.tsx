@@ -1,86 +1,61 @@
-import React, { useRef, useState } from 'react';
-
-type Sphere = {
-  x: number;
-  y: number;
-  z: number;
-  radius: number;
-  r: number;
-  g: number;
-  b: number;
-};
+import React, { useState, useRef } from 'react';
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  const [sphere, setSphere] = useState<Sphere>({
-    x: 0.0,
-    y: 0.0,
-    z: 0.0,
-    radius: 0.3,
-    r: 255,
-    g: 0,
-    b: 0,
-  });
-
+  const [sceneJSON, setSceneJSON] = useState<string>('{\n  "width": 400,\n  "height": 300,\n  "spheres": []\n}');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setSphere((prev) => ({ ...prev, [name]: parseFloat(value) }));
-  };
-
-  const addSphere = async () => {
+  const handleRender = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      await fetch('http://localhost:3001/add_sphere', {
+      // Validate JSON before sending
+      const parsed = JSON.parse(sceneJSON);
+
+      // Send JSON to server
+      await fetch('http://localhost:3001/scene', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(sphere),
+        body: JSON.stringify(parsed),
       });
 
+      // Request rendered image
       const res = await fetch('http://localhost:3001/render');
-      const buffer = new Uint8Array(await res.arrayBuffer());
+const text = await res.text();
 
-      // --- Robust PPM header parsing ---
-      const textChunk = new TextDecoder('ascii').decode(buffer.slice(0, 1024));
-      const parts = textChunk.split(/\s+/).filter(Boolean);
+// --- Parse P3 header ---
+const lines = text.trim().split(/\s+/);
+if (lines[0] !== 'P3') throw new Error('Not a P3 PPM file');
 
-      if (parts[0] !== 'P6') throw new Error('Not a P6 PPM file');
-      const width = parseInt(parts[1], 10);
-      const height = parseInt(parts[2], 10);
-      const maxval = parseInt(parts[3], 10);
-      if (maxval !== 255) throw new Error('Unsupported maxval');
+const width = parseInt(lines[1]);
+const height = parseInt(lines[2]);
+const maxVal = parseInt(lines[3]);
 
-      const headerEnd = textChunk.indexOf('255') + 3;
-      const pixelStart = textChunk.indexOf('\n', headerEnd) + 1;
+const pixelValues = lines.slice(4).map(Number);
+if (pixelValues.length !== width * height * 3) throw new Error('Invalid pixel data length');
 
-      const pixelData = buffer.slice(pixelStart);
+const rgba = new Uint8ClampedArray(width * height * 4);
+for (let i = 0, j = 0; i < pixelValues.length; i += 3, j += 4) {
+  rgba[j] = (pixelValues[i] / maxVal) * 255;
+  rgba[j + 1] = (pixelValues[i + 1] / maxVal) * 255;
+  rgba[j + 2] = (pixelValues[i + 2] / maxVal) * 255;
+  rgba[j + 3] = 255;
+}
 
+// Draw to canvas
+const canvas = canvasRef.current;
+if (canvas) {
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    const imageData = new ImageData(rgba, width, height);
+    ctx.putImageData(imageData, 0, 0);
+  }
+}
 
-      // --- Create RGBA buffer ---
-      const rgba = new Uint8ClampedArray(width * height * 4);
-      for (let i = 0, j = 0; i < pixelData.length; i += 3, j += 4) {
-        rgba[j] = pixelData[i];       // R
-        rgba[j + 1] = pixelData[i + 1]; // G
-        rgba[j + 2] = pixelData[i + 2]; // B
-        rgba[j + 3] = 255;             // A
-      }
-
-      // --- Draw to canvas ---
-      const canvas = canvasRef.current;
-      if (canvas) {
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          const imageData = new ImageData(rgba, width, height);
-          ctx.putImageData(imageData, 0, 0);
-        }
-      }
 
       setLoading(false);
     } catch (err) {
@@ -92,24 +67,21 @@ function App() {
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'monospace' }}>
-      <h1>Raycaster UI</h1>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'auto auto', gap: '1rem', maxWidth: '400px' }}>
-        {Object.entries(sphere).map(([key, value]) => (
-          <label key={key}>
-            {key}: <input type="number" step="0.1" name={key} value={value} onChange={handleChange} />
-          </label>
-        ))}
-      </div>
-
-      <button onClick={addSphere} style={{ marginTop: '1rem' }}>
-        Add Sphere + Render
+      <h1>Raytracer Scene Renderer</h1>
+      <textarea
+        value={sceneJSON}
+        onChange={(e) => setSceneJSON(e.target.value)}
+        rows={20}
+        cols={80}
+        style={{ fontFamily: 'monospace', fontSize: '14px', width: '100%' }}
+      />
+      <br />
+      <button onClick={handleRender} style={{ marginTop: '1rem' }}>
+        Render Scene
       </button>
-
       {loading && <p>Rendering...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      <canvas ref={canvasRef} style={{ marginTop: '1rem', border: '1px solid #ccc' }} />
+      <canvas ref={canvasRef} style={{ marginTop: '2rem', border: '1px solid #ccc' }} />
     </div>
   );
 }
