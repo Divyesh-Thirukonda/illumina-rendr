@@ -23,38 +23,38 @@ function App() {
 
       // Request rendered image
       const res = await fetch('http://localhost:3001/render');
-const text = await res.text();
+      const text = await res.text();
 
-// --- Parse P3 header ---
-const lines = text.trim().split(/\s+/);
-if (lines[0] !== 'P3') throw new Error('Not a P3 PPM file');
+      // --- Parse P3 header ---
+      const lines = text.trim().split(/\s+/);
+      if (lines[0] !== 'P3') throw new Error('Not a P3 PPM file');
 
-const width = parseInt(lines[1]);
-const height = parseInt(lines[2]);
-const maxVal = parseInt(lines[3]);
+      const width = parseInt(lines[1]);
+      const height = parseInt(lines[2]);
+      const maxVal = parseInt(lines[3]);
 
-const pixelValues = lines.slice(4).map(Number);
-if (pixelValues.length !== width * height * 3) throw new Error('Invalid pixel data length');
+      const pixelValues = lines.slice(4).map(Number);
+      if (pixelValues.length !== width * height * 3) throw new Error('Invalid pixel data length');
 
-const rgba = new Uint8ClampedArray(width * height * 4);
-for (let i = 0, j = 0; i < pixelValues.length; i += 3, j += 4) {
-  rgba[j] = (pixelValues[i] / maxVal) * 255;
-  rgba[j + 1] = (pixelValues[i + 1] / maxVal) * 255;
-  rgba[j + 2] = (pixelValues[i + 2] / maxVal) * 255;
-  rgba[j + 3] = 255;
-}
+      const rgba = new Uint8ClampedArray(width * height * 4);
+      for (let i = 0, j = 0; i < pixelValues.length; i += 3, j += 4) {
+        rgba[j] = (pixelValues[i] / maxVal) * 255;
+        rgba[j + 1] = (pixelValues[i + 1] / maxVal) * 255;
+        rgba[j + 2] = (pixelValues[i + 2] / maxVal) * 255;
+        rgba[j + 3] = 255;
+      }
 
-// Draw to canvas
-const canvas = canvasRef.current;
-if (canvas) {
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext('2d');
-  if (ctx) {
-    const imageData = new ImageData(rgba, width, height);
-    ctx.putImageData(imageData, 0, 0);
-  }
-}
+      // Draw to canvas
+      const canvas = canvasRef.current;
+      if (canvas) {
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          const imageData = new ImageData(rgba, width, height);
+          ctx.putImageData(imageData, 0, 0);
+        }
+      }
 
 
       setLoading(false);
