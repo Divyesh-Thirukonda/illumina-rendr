@@ -1,0 +1,29 @@
+eye 0 5 10
+viewdir 0 -0.5 -1
+updir 0 1 0
+vfov 45
+imsize 800 600
+bkgcolor 0.5 0.1 0.8 1.0
+
+light 5 10 5 1 1
+
+mtlcolor 0.8 0.8 0.8  1.0 1.0 1.0  0.0 0.8 1.0  10  1  0.5
+v -10 0 -10
+v  10 0 -10
+v  10 0  10
+v -10 0  10
+f 1 2 3
+f 1 3 4
+
+mtlcolor 0 0 0  0.5 1 1  0 0 1  100  1  0.5
+sphere 0 1 0 1
+
+mtlcolor 0.2 0.2 0.2  1.0 1.0 1.0  0.0 0.9 1.0  50  1  0.5
+sphere -3 1 0 1
+
+mtlcolor .5 .5 .5 1 1 1 0.02 0.06 0.2 100 0.1 1.5
+sphere 0 1 3 1
+
+texture soccerball.ppm
+mtlcolor 0.2 0.2 0.2  1.0 1.0 1.0  0.0 0.9 0  50  1  0.5
+sphere 3 1 0 1
