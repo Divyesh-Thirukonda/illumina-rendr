@@ -1,38 +1,160 @@
-.App {
-  text-align: center;
+/* App.css */
+
+/* General Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1e1e2f, #2a2a40);
+  color: #f0f0f0;
+  line-height: 1.6;
+  overflow-x: hidden;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Layout */
+.app-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  gap: 2rem;
+  padding: 2rem;
+  height: 100vh;
+}
+
+.canvas-container {
+  flex: 1;
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: flex-start;
+  background-color: #101020;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
 
-.App-link {
-  color: #61dafb;
+canvas {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 0 16px rgba(0, 255, 255, 0.2);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Settings Panel */
+.settings-container {
+  flex: 2;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+/* Sections */
+.settings-container h1,
+.settings-container h2,
+.settings-container h3,
+.settings-container h4,
+.settings-container h5 {
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.settings-container > div {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Inputs */
+input[type="number"],
+input[type="checkbox"] {
+  margin: 0.2rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background-color: #2d2d3a;
+  color: #fff;
+  width: 5rem;
+  font-size: 0.9rem;
+}
+
+input[type="checkbox"] {
+  width: auto;
+  transform: scale(1.1);
+  margin-right: 0.5rem;
+}
+
+label {
+  display: block;
+  margin-top: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
+/* Buttons */
+button {
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: #fff;
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(to right, #00e5ff, #008cff);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Toggle Buttons */
+button[style*="color: gray"] {
+  background: transparent;
+  color: #aaa !important;
+  border: 1px solid #444;
+  padding: 0.2rem 0.6rem;
+  font-size: 1rem;
+  box-shadow: none;
+}
+
+button[style*="color: gray"]:hover {
+  color: #fff !important;
+  border-color: #777;
+}
+
+/* Delete Buttons */
+button[style*="color: red"] {
+  background: #ff4d4d;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(255, 77, 77, 0.3);
+}
+
+button[style*="color: red"]:hover {
+  background: #ff1a1a;
+}
+
+@media (max-width: 1024px) {
+  .app-container {
+    flex-direction: column;
+    height: auto;
   }
-  to {
-    transform: rotate(360deg);
+
+  .canvas-container,
+  .settings-container {
+    width: 100%;
+  }
+
+  .canvas-container {
+    justify-content: center;
   }
 }

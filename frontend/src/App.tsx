@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+
+import './App.css';
 
 type Vec3 = [number, number, number];
-
 
 const defaultScene = {
   eye: [0, 0, 5] as Vec3,
@@ -62,7 +63,7 @@ const defaultScene = {
       hasAlphaAt: false
     }
   }
-]
+  ]
 
 };
 
@@ -291,9 +292,73 @@ function App() {
     }
   };
 
+
+  useEffect(() => {
+    handleRender();
+  }, [scene]);
+
+
+  // all spheres visibility state should be true by default
+  const [visibleSpheres, setVisibleSpheres] = useState(() => {
+    const initialVisibility: { [key: number]: boolean } = {};
+    for (let i = 0; i < scene.spheres.length; i++) {
+      initialVisibility[i] = false;
+    }
+    return initialVisibility;
+  });
+  const toggleSphereVisibility = (idx: number) => {
+    setVisibleSpheres(prev => ({
+      ...prev,
+      [idx]: !prev[idx],
+    }));
+  };
+
+  const [visibleLights, setVisibleLights] = useState(() => {
+    const initialVisibility: { [key: number]: boolean } = {};
+    for (let i = 0; i < scene.lights.length; i++) {
+      initialVisibility[i] = false;
+    }
+    return initialVisibility;
+  });
+  const toggleLightVisibility = (idx: number) => {
+    setVisibleLights(prev => ({
+      ...prev,
+      [idx]: !prev[idx],
+    }));
+  };
+
+  const [visibleCubes, setVisibleCubes] = useState(() => {
+    const initialVisibility: { [key: number]: boolean } = {};
+    for (let i = 0; i < scene.cubes.length; i++) {
+      initialVisibility[i] = false;
+    }
+    return initialVisibility;
+  });
+  const toggleCubeVisibility = (idx: number) => {
+    setVisibleCubes(prev => ({
+      ...prev,
+      [idx]: !prev[idx],
+    }));
+  };
+
+
+
+
+
+
+
+
+
+
+
+
   return (
-    <div style={{ padding: '2rem', fontFamily: 'monospace' }}>
-      <h1>Raytracer Scene Editor</h1>
+    
+  <div className="app-container">
+    <div className="canvas-container">
+      <canvas ref={canvasRef} style={{ border: '1px solid #ccc' }} />
+    </div>
+    <div className="settings-container">
 
       <button onClick={() => setShowSceneSettings(!showSceneSettings)} style={{ marginBottom: '1rem' }}>
         {showSceneSettings ? 'Hide' : 'Show'} Scene Settings
@@ -362,73 +427,95 @@ function App() {
         </div>
       )}
 
+
+
       <h2>Spheres</h2>
       {scene.spheres.map((s, idx) => (
         <div key={idx} style={{ border: '1px solid #ccc', padding: '1rem', marginBottom: '1rem' }}>
-          <h4>Sphere {idx + 1}</h4>
-          <label>Center: {s.center.map((v, i) => (
-            <input key={i} type="number" value={v}
-              onChange={(e) => {
-                const updated = [...scene.spheres];
-                updated[idx].center[i] = parseFloat(e.target.value);
-                updateScene("spheres", updated);
-              }} />
-          ))}</label><br />
-          <label>Radius: <input type="number" value={s.radius}
-            onChange={(e) => {
-              const updated = [...scene.spheres];
-              updated[idx].radius = parseFloat(e.target.value);
-              updateScene("spheres", updated);
-            }} /></label><br />
-          <label>Diffuse: {s.diffuse.map((v, i) => (
-            <input key={i} type="number" value={v}
-              onChange={(e) => {
-                const updated = [...scene.spheres];
-                updated[idx].diffuse[i] = parseFloat(e.target.value);
-                updateScene("spheres", updated);
-              }} />
-          ))}</label><br />
-          <label>Specular: {s.specular.map((v, i) => (
-            <input key={i} type="number" value={v}
-              onChange={(e) => {
-                const updated = [...scene.spheres];
-                updated[idx].specular[i] = parseFloat(e.target.value);
-                updateScene("spheres", updated);
-              }} />
-          ))}</label><br />
-          <label>Intensity: {s.intensity.map((v, i) => (
-            <input key={i} type="number" value={v}
-              onChange={(e) => {
-                const updated = [...scene.spheres];
-                updated[idx].intensity[i] = parseFloat(e.target.value);
-                updateScene("spheres", updated);
-              }} />
-          ))}</label><br />
-          <label>Shininess: <input type="number" value={s.shininess}
-            onChange={(e) => {
-              const updated = [...scene.spheres];
-              updated[idx].shininess = parseFloat(e.target.value);
-              updateScene("spheres", updated);
-            }} /></label><br />
-          <label>Alpha: <input type="number" value={s.alpha}
-            onChange={(e) => {
-              const updated = [...scene.spheres];
-              updated[idx].alpha = parseFloat(e.target.value);
-              updateScene("spheres", updated);
-            }} /></label><br />
-          <label>Eta: <input type="number" value={s.eta}
-            onChange={(e) => {
-              const updated = [...scene.spheres];
-              updated[idx].eta = parseFloat(e.target.value);
-              updateScene("spheres", updated);
-            }} /></label><br />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h4>Sphere {idx + 1}</h4>
+            <button
+              onClick={() => toggleSphereVisibility(idx)}
+              style={{ color: 'gray' }}
+            >
+              {visibleSpheres[idx] === false ? '+' : '-'}
+            </button>
+          </div>
+
+          {visibleSpheres[idx] !== false && (
+            <>
+              <label>Center: {s.center.map((v, i) => (
+                <input key={i} type="number" value={v}
+                  onChange={(e) => {
+                    const updated = [...scene.spheres];
+                    updated[idx].center[i] = parseFloat(e.target.value);
+                    updateScene("spheres", updated);
+                  }} />
+              ))}</label><br />
+              <label>Radius: <input type="number" value={s.radius}
+                onChange={(e) => {
+                  const updated = [...scene.spheres];
+                  updated[idx].radius = parseFloat(e.target.value);
+                  updateScene("spheres", updated);
+                }} /></label><br />
+              <label>Diffuse: {s.diffuse.map((v, i) => (
+                <input key={i} type="number" value={v}
+                  onChange={(e) => {
+                    const updated = [...scene.spheres];
+                    updated[idx].diffuse[i] = parseFloat(e.target.value);
+                    updateScene("spheres", updated);
+                  }} />
+              ))}</label><br />
+              <label>Specular: {s.specular.map((v, i) => (
+                <input key={i} type="number" value={v}
+                  onChange={(e) => {
+                    const updated = [...scene.spheres];
+                    updated[idx].specular[i] = parseFloat(e.target.value);
+                    updateScene("spheres", updated);
+                  }} />
+              ))}</label><br />
+              <label>Intensity: {s.intensity.map((v, i) => (
+                <input key={i} type="number" value={v}
+                  onChange={(e) => {
+                    const updated = [...scene.spheres];
+                    updated[idx].intensity[i] = parseFloat(e.target.value);
+                    updateScene("spheres", updated);
+                  }} />
+              ))}</label><br />
+              <label>Shininess: <input type="number" value={s.shininess}
+                onChange={(e) => {
+                  const updated = [...scene.spheres];
+                  updated[idx].shininess = parseFloat(e.target.value);
+                  updateScene("spheres", updated);
+                }} /></label><br />
+              <label>Alpha: <input type="number" value={s.alpha}
+                onChange={(e) => {
+                  const updated = [...scene.spheres];
+                  updated[idx].alpha = parseFloat(e.target.value);
+                  updateScene("spheres", updated);
+                }} /></label><br />
+              <label>Eta: <input type="number" value={s.eta}
+                onChange={(e) => {
+                  const updated = [...scene.spheres];
+                  updated[idx].eta = parseFloat(e.target.value);
+                  updateScene("spheres", updated);
+                }} /></label><br />
+            </>
+          )}
 
           <button onClick={() => {
             const updated = scene.spheres.filter((_, i) => i !== idx);
             updateScene("spheres", updated);
+            // make sure to update visibility state
+            setVisibleSpheres(prev => {
+              const newVisibility = { ...prev };
+              delete newVisibility[idx];
+              return newVisibility;
+            });
           }} style={{ marginTop: '0.5rem', color: 'red' }}>Delete Sphere</button>
         </div>
       ))}
+
 
       <button onClick={() => {
         const newSphere = {
@@ -443,60 +530,83 @@ function App() {
           hasAlphaAt: false
         };
         updateScene("spheres", [...scene.spheres, newSphere]);
+        // make sure to update visibility state
+        setVisibleSpheres(prev => ({
+          ...prev,
+          [scene.spheres.length]: true
+        }));
       }} style={{ marginBottom: '2rem' }}>+ Add Sphere</button>
 
       {/* ---------- Lights ---------- */}
       <h2>Lights</h2>
       {scene.lights.map((light, idx) => (
         <div key={idx} style={{ border: '1px solid #ccc', padding: '1rem', marginBottom: '1rem' }}>
-          <h4>Light {idx + 1}</h4>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h4>Light {idx + 1}</h4>
+            <button
+              onClick={() => toggleLightVisibility(idx)}
+              style={{ color: 'gray' }}
+            >
+              {visibleLights[idx] === false ? '+' : '-'}
+            </button>
+          </div>
 
-          <label>Position: {light.position.map((v, i) => (
-            <input key={i} type="number" value={v}
-              onChange={(e) => {
-                const updated = [...scene.lights];
-                updated[idx].position[i] = parseFloat(e.target.value);
-                updateScene("lights", updated);
-              }} />
-          ))}</label><br />
+          {visibleLights[idx] !== false && (
+            <>
+              <label>Position: {light.position.map((v, i) => (
+                <input key={i} type="number" value={v}
+                  onChange={(e) => {
+                    const updated = [...scene.lights];
+                    updated[idx].position[i] = parseFloat(e.target.value);
+                    updateScene("lights", updated);
+                  }} />
+              ))}</label><br />
 
-          <label>w: <input type="number" value={light.w}
-            onChange={(e) => {
-              const updated = [...scene.lights];
-              updated[idx].w = parseFloat(e.target.value);
-              updateScene("lights", updated);
-            }} /></label><br />
-
-          <label>intensity: <input type="number" value={light.intensity}
-            onChange={(e) => {
-              const updated = [...scene.lights];
-              updated[idx].intensity = parseFloat(e.target.value);
-              updateScene("lights", updated);
-            }} /></label><br />
-
-          <label>
-            <input type="checkbox" checked={light.useAttenuation}
-              onChange={() => {
-                const updated = [...scene.lights];
-                updated[idx].useAttenuation = !updated[idx].useAttenuation;
-                updateScene("lights", updated);
-              }} />
-            Use Attenuation
-          </label><br />
-
-          {light.useAttenuation && (
-            <label>Attenuation: {light.attenuation.map((v, i) => (
-              <input key={i} type="number" value={v}
+              <label>w: <input type="number" value={light.w}
                 onChange={(e) => {
                   const updated = [...scene.lights];
-                  updated[idx].attenuation[i] = parseFloat(e.target.value);
+                  updated[idx].w = parseFloat(e.target.value);
                   updateScene("lights", updated);
-                }} />
-            ))}</label>
-          )}<br />
+                }} /></label><br />
+
+              <label>intensity: <input type="number" value={light.intensity}
+                onChange={(e) => {
+                  const updated = [...scene.lights];
+                  updated[idx].intensity = parseFloat(e.target.value);
+                  updateScene("lights", updated);
+                }} /></label><br />
+
+              <label>
+                <input type="checkbox" checked={light.useAttenuation}
+                  onChange={() => {
+                    const updated = [...scene.lights];
+                    updated[idx].useAttenuation = !updated[idx].useAttenuation;
+                    updateScene("lights", updated);
+                  }} />
+                Use Attenuation
+              </label><br />
+
+              {light.useAttenuation && (
+                <label>Attenuation: {light.attenuation.map((v, i) => (
+                  <input key={i} type="number" value={v}
+                    onChange={(e) => {
+                      const updated = [...scene.lights];
+                      updated[idx].attenuation[i] = parseFloat(e.target.value);
+                      updateScene("lights", updated);
+                    }} />
+                ))}</label>
+              )}<br />
+            </>
+          )}
 
           <button onClick={() => {
             const updated = scene.lights.filter((_, i) => i !== idx);
+                      // make sure to update visibility state
+                      setVisibleSpheres(prev => {
+            const newVisibility = { ...prev };
+            delete newVisibility[idx];
+            return newVisibility;
+          });
             updateScene("lights", updated);
           }} style={{ marginTop: '0.5rem', color: 'red' }}>Delete Light</button>
         </div>
@@ -510,6 +620,11 @@ function App() {
           useAttenuation: false,
           attenuation: [1, 0, 0] as Vec3
         };
+        // make sure to update visibility state
+        setVisibleLights(prev => ({
+          ...prev,
+          [scene.lights.length]: true
+        }));
         updateScene("lights", [...scene.lights, newLight]);
       }} style={{ marginBottom: '2rem' }}>+ Add Light</button>
 
@@ -520,75 +635,93 @@ function App() {
       <h2>Cubes</h2>
       {scene.cubes.map((cube, idx) => (
         <div key={idx} style={{ border: '1px solid #ccc', padding: '1rem', marginBottom: '1rem' }}>
-          <h4>Cube {idx + 1}</h4>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h4>Cube {idx + 1}</h4>
+            <button
+              onClick={() => toggleCubeVisibility(idx)}
+              style={{ color: 'gray' }}
+            >
+              {visibleCubes[idx] === false ? '+' : '-'}
+            </button>
+          </div>
 
-          <label>Position: {cube.position.map((v, i) => (
-            <input key={i} type="number" value={v}
-              onChange={(e) => {
-                const updated = [...scene.cubes];
-                updated[idx].position[i] = parseFloat(e.target.value);
-                updateScene("cubes", updated);
-              }} />
-          ))}</label><br />
+          {visibleCubes[idx] !== false && (
+            <>
+              <label>Position: {cube.position.map((v, i) => (
+                <input key={i} type="number" value={v}
+                  onChange={(e) => {
+                    const updated = [...scene.cubes];
+                    updated[idx].position[i] = parseFloat(e.target.value);
+                    updateScene("cubes", updated);
+                  }} />
+              ))}</label><br />
 
-          <label>Scale: <input type="number" value={cube.scale}
-            onChange={(e) => {
-              const updated = [...scene.cubes];
-              updated[idx].scale = parseFloat(e.target.value);
-              updateScene("cubes", updated);
-            }} /></label><br />
+              <label>Scale: <input type="number" value={cube.scale}
+                onChange={(e) => {
+                  const updated = [...scene.cubes];
+                  updated[idx].scale = parseFloat(e.target.value);
+                  updateScene("cubes", updated);
+                }} /></label><br />
 
-          <label>Rotation (degrees): {cube.rotation.map((v, i) => (
-            <input key={i} type="number" value={v}
-              onChange={(e) => {
-                const updated = [...scene.cubes];
-                updated[idx].rotation[i] = parseFloat(e.target.value);
-                updateScene("cubes", updated);
-              }} />
-          ))}</label><br />
+              <label>Rotation (degrees): {cube.rotation.map((v, i) => (
+                <input key={i} type="number" value={v}
+                  onChange={(e) => {
+                    const updated = [...scene.cubes];
+                    updated[idx].rotation[i] = parseFloat(e.target.value);
+                    updateScene("cubes", updated);
+                  }} />
+              ))}</label><br />
 
-          <h5>Material</h5>
-          <label>Diffuse: {cube.material.diffuse.map((v, i) => (
-            <input key={i} type="number" value={v}
-              onChange={(e) => {
-                const updated = [...scene.cubes];
-                updated[idx].material.diffuse[i] = parseFloat(e.target.value);
-                updateScene("cubes", updated);
-              }} />
-          ))}</label><br />
+              <h5>Material</h5>
+              <label>Diffuse: {cube.material.diffuse.map((v, i) => (
+                <input key={i} type="number" value={v}
+                  onChange={(e) => {
+                    const updated = [...scene.cubes];
+                    updated[idx].material.diffuse[i] = parseFloat(e.target.value);
+                    updateScene("cubes", updated);
+                  }} />
+              ))}</label><br />
 
-          <label>Specular: {cube.material.specular.map((v, i) => (
-            <input key={i} type="number" value={v}
-              onChange={(e) => {
-                const updated = [...scene.cubes];
-                updated[idx].material.specular[i] = parseFloat(e.target.value);
-                updateScene("cubes", updated);
-              }} />
-          ))}</label><br />
+              <label>Specular: {cube.material.specular.map((v, i) => (
+                <input key={i} type="number" value={v}
+                  onChange={(e) => {
+                    const updated = [...scene.cubes];
+                    updated[idx].material.specular[i] = parseFloat(e.target.value);
+                    updateScene("cubes", updated);
+                  }} />
+              ))}</label><br />
 
-          <label>Intensity: {cube.material.intensity.map((v, i) => (
-            <input key={i} type="number" value={v}
-              onChange={(e) => {
-                const updated = [...scene.cubes];
-                updated[idx].material.intensity[i] = parseFloat(e.target.value);
-                updateScene("cubes", updated);
-              }} />
-          ))}</label><br />
+              <label>Intensity: {cube.material.intensity.map((v, i) => (
+                <input key={i} type="number" value={v}
+                  onChange={(e) => {
+                    const updated = [...scene.cubes];
+                    updated[idx].material.intensity[i] = parseFloat(e.target.value);
+                    updateScene("cubes", updated);
+                  }} />
+              ))}</label><br />
 
-          <label>Shininess: <input type="number" value={cube.material.shininess}
-            onChange={(e) => {
-              const updated = [...scene.cubes];
-              updated[idx].material.shininess = parseFloat(e.target.value);
-              updateScene("cubes", updated);
-            }}/>
-          </label><br />
-          
+              <label>Shininess: <input type="number" value={cube.material.shininess}
+                onChange={(e) => {
+                  const updated = [...scene.cubes];
+                  updated[idx].material.shininess = parseFloat(e.target.value);
+                  updateScene("cubes", updated);
+                }} /></label><br />
+            </>
+          )}
+
           <button onClick={() => {
             const updated = scene.cubes.filter((_, i) => i !== idx);
+            // make sure to update visibility state
+            setVisibleCubes(prev => {
+              const newVisibility = { ...prev };
+              delete newVisibility[idx];
+              return newVisibility;
+            })
             updateScene("cubes", updated);
           }} style={{ color: 'red', marginTop: '0.5rem' }}>Delete Cube</button>
         </div>
       ))}
+
 
       <button onClick={() => {
         const newCube = {
@@ -605,6 +738,11 @@ function App() {
             hasAlphaAt: false
           }
         };
+        // make sure to update visibility state
+        setVisibleCubes(prev => ({
+          ...prev,
+          [scene.cubes.length]: true
+        }));
         updateScene("cubes", [...scene.cubes, newCube]);
       }} style={{ marginBottom: '2rem' }}>
         + Add Cube
@@ -613,13 +751,11 @@ function App() {
 
 
 
-
+      <br></br>
       <button onClick={handleRender} style={{ marginTop: '1rem' }}>
-        Render Scene
+        (Re)render Scene
       </button>
-      {loading && <p>Rendering...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <canvas ref={canvasRef} style={{ marginTop: '2rem', border: '1px solid #ccc' }} />
+    </div>
     </div>
   );
 }
