@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 #include "json.hpp" // using nlohmann::json for JSON parsing
-#include "raycaster_pro.cpp" // assuming your Scene, Sphere, Vec3 etc. are declared here
+#include "raycaster_pro.cpp"
 
 using json = nlohmann::json;
 using namespace std;
