@@ -16,27 +16,18 @@ Vec2 toVec2(const json& j) {
 }
 
 int main(int argc, char** argv) {
-    if (argc < 3) {
-        cerr << "Usage: raycaster <scene.json> <output.ppm>" << endl;
-        return 1;
-    }
-
-    string sceneFile = argv[1];
-    string outputFile = argv[2];
-
-    ifstream in(sceneFile);
-    if (!in.is_open()) {
-        cerr << "Failed to open " << sceneFile << endl;
-        return 1;
-    }
+    // Read all stdin into a string
+    stringstream buffer;
+    buffer << cin.rdbuf();
 
     json jscene;
     try {
-        in >> jscene;
+        jscene = json::parse(buffer.str());
     } catch (const json::parse_error& e) {
         cerr << "Invalid JSON: " << e.what() << endl;
         return 1;
     }
+
 
     Scene scene;
     scene.width = jscene["width"];
@@ -150,6 +141,6 @@ int main(int argc, char** argv) {
         scene.normals.push_back(toVec3(n));
     }
 
-    render(scene, outputFile);
+    render(scene, std::cout);
     return 0;
 }
