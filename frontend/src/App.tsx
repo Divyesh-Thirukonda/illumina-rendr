@@ -244,7 +244,7 @@ function App() {
       };
 
       
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001';
+      const BACKEND_URL = process.env.AWS_BACKEND_URL || 'http://localhost:3001';
 
       // POST scene to backend
       const res = await fetch(BACKEND_URL + '/render', {
